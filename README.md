@@ -6,7 +6,7 @@ I wrote this because the number of pis in my family has reached a point point wh
 The pis are used as UPnP casting targets for Symfonium on android.<br>
 upmpdcli and mpd allow for bit perfect casting while snapcast allows for multi-room casting (letting multiple pis play the same music in sync).<br>
 This playbook can turn a pi (or many) with a fresh raspbian install into a finished UPnP target within a couple of minutes with no user interaction.<br>
-I tested it on Raspberry Pi Zero 1W, Raspberry Zero 2W, Raspberry Pi 2 and Raspberry Pi 3B. Tested DACs: Hifiberry Dac+ Pro and Hifiberry Dac+ Zero
+I tested it on Raspberry Pi Zero 1W, Zero 2W, 2 and 3B. Tested DACs: Hifiberry Dac+ Pro and Dac+ Zero.
 
 **What can this playbook do?**
   * update all packages
