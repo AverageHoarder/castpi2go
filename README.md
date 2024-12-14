@@ -1,6 +1,6 @@
 # castpi2go
 
-## Ansible playbook to deploy/manage multiple raspberry pis + hifiberry DAC HATs with upmpdcli, mpd and snapcast as multi-room UPnP targets
+## Ansible playbook to deploy/manage raspberry pis + hifiberry DAC HATs with upmpdcli, mpd and snapcast as multi-room UPnP targets
 
 I wrote this because the number of pis in my family has reached a point point where deploying them and keeping them up to date has become a chore.<br>
 The pis are used as UPnP casting targets for Symfonium on android.<br>
