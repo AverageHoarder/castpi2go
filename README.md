@@ -126,7 +126,7 @@ friendly_name: Pi3B_snapserver
 snapcast_server_ip: 192.168.1.42
 ```
 
-This would yield 3 new UPnP casting targets in Symfonium: Pi3B, PiZero2W and Pi3B_snapserver. Casting to Pi3B_snapserver would lead to the other two pis playing in sync. In this case you could control the volume of these 2 pis by opening `http://192.168.1.42:1780/` in a browser. Alternatively you can cast to each of the 2 pis individually, in which case Symfonium controls the volume.
+This would yield 3 new UPnP casting targets in Symfonium: Pi3B, PiZero2W and Pi3B_snapserver. Casting to Pi3B_snapserver would lead to the other two pis playing in sync. In this case you could control the volume of these 2 pis by opening `http://192.168.1.42:1780/` in a browser. Alternatively you could cast to each of the 2 pis individually, in which case Symfonium controls the volume.
 
 ## Recommended Hardware
 For an inexpensive but capable player I suggest using a [Raspberry Pi Zero 2W](https://www.raspberrypi.com/products/raspberry-pi-zero-2-w/), a [Hifiberry Dac+ Zero](https://www.hifiberry.com/shop/boards/hifiberry-dac-zero/) and a 32GB or 64GB microSD card of class A3 at least.
