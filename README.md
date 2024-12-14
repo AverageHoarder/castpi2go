@@ -78,7 +78,7 @@ You can also use a different user ("ansible" if you lack creativity), I chose na
 1. In the castpi2go directory, edit the bootstrap playbook `nano bootstrap.yml`, then look for the `add ssh key` task and fill out `key: ""` with your public ansible key `cat ~/.ssh/ansible.pub`.
 2. If you want to use a different user, search and replace all instances of "nandor" in bootstrap.yml with your chosen user name. You'll also have to edit `nano ansible.cfg` and replace nandor for the "remote_user" option.
 3. Ensure that "private_key_file" in `nano ansible.cfg` points to your ansible SSH key and that the "remote_user" matches your chosen ansible user.
-4. Execute the bootstrap playbook `ansible-playbook bootstrap.yml -u user --key-file ~/.ssh/id_ed25519` (replace "user" with the user you set in Raspberry Pi Imager and "--key-file" with your normal SSH key.
+4. Execute the bootstrap playbook `ansible-playbook bootstrap.yml -u user --key-file ~/.ssh/id_ed25519` (replace "user" with the user you set in Raspberry Pi Imager and "--key-file" with your normal SSH key).
 
 ### Run the main playbook to fully set up your pi(s)
 1. Edit the main playbook `nano castpi2go.yml`, find the "add ssh key for ansible user" task and fill out `key: ""` with your public ansible key `cat ~/.ssh/ansible.pub`. This is also performed in the bootstrap playbook and kept as a means to easily revoke or change the ssh key later on by adding "state: absent" for example. If you use a different ansible user, change "user: nandor" as well.
@@ -87,7 +87,46 @@ You can also use a different user ("ansible" if you lack creativity), I chose na
 ### Adding more Raspberry Pis
 If you want to add more pis, repeat the steps to flash the microSD card (Raspberry Pi Imager should remember your credentials and ssh key so you only have to change the host name).
 Then give the pi a static IP and add that to the inventory file. Create a matching host_vars file for it and set the variables, then run the bootstrap playbook and the main playbook.
-If you do not want to execute the playbooks on all hosts each time (does no harm but may slow down execution), limit them to a specific host like this: `ansible-playbook bootstrap.yml -u user --key-file ~/.ssh/id_ed25519 --limit pi-IP/hostname` and `ansible-playbook castpi2go.yml --limit pi-IP/hostname``
+If you do not want to execute the playbooks on all hosts each time (does no harm but may slow down execution), limit them to a specific host like this: `ansible-playbook bootstrap.yml -u user --key-file ~/.ssh/id_ed25519 --limit pi-IP/hostname` and `ansible-playbook castpi2go.yml --limit pi-IP/hostname`
+
+## Example Inventory and Host Variables
+Let's say you have 3 Raspberry Pis:<br>
+3B without DAC on 192.168.1.42<br>
+3B with Hifiberry Dac+ Pro on 192.168.1.40<br>
+Zero 2W with Hifiberry Dac+ Zero on 192.168.1.41<br>
+Since one of the 3Bs has no DAC, you want to install the snapserver on it. The config would look like this:<br>
+
+`inventory` would contain:
+```
+[snapclients]
+192.168.1.40
+192.168.1.41
+
+[snapservers]
+192.168.1.42
+```
+
+`host_vars/192.168.1.40.yml` would contain:
+```
+friendly_name: Pi3B
+hifiberry_overlay: dtoverlay=hifiberry-dac plus
+snapcast_server_ip: 192.168.1.42
+```
+
+`host_vars/192.168.1.41.yml` would contain:
+```
+friendly_name: PiZero2W
+hifiberry_overlay: dtoverlay=hifiberry-dac
+snapcast_server_ip: 192.168.1.42
+```
+
+`host_vars/192.168.1.42.yml` would contain:
+```
+friendly_name: Pi3B_snapserver
+snapcast_server_ip: 192.168.1.42
+```
+
+This would yield 3 new UPnP casting targets in Symfonium: Pi3B, PiZero2W and Pi3B_snapserver. Casting to Pi3B_snapserver would lead to the other two pis playing in sync. In this case you could control the volume of these 2 pis by opening `http://192.168.1.42:1780/` in a browser. Alternatively you can cast to each of the 2 pis individually, in which case Symfonium controls the volume.
 
 ## Recommended Hardware
 For an inexpensive but capable player I suggest using a [Raspberry Pi Zero 2W](https://www.raspberrypi.com/products/raspberry-pi-zero-2-w/), a [Hifiberry Dac+ Zero](https://www.hifiberry.com/shop/boards/hifiberry-dac-zero/) and a 32GB or 64GB microSD card of class A3 at least.
