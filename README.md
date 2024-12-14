@@ -54,14 +54,14 @@ You should then have two SSH key pairs (public/private) in `~/.ssh`.
 8. Services: Enable SSH, I recommend using public-key authentification only and pasting the contents of the public key of your normal user `cat ~/.ssh/id_ed25519.pub`
 9. save changes, apply the OS settings and confirm flashing the microSD card
 
-### Giving your pi a static IP (optional but recommended)
+### Giving your Raspberry Pi a static IP (optional but recommended)
 Since the playbook will configure the pis based on their IP/hostname, giving them static IPs is recommended.
 1. install the microSD card in your pi, install the Hifiberry DAC HAT (optional) and connect the power supply
 2. once the pi has booted, find out its IP address in your router
 3. SSH into the pi via `ssh username@IP/hostname` (replace "username" with the user you set in Raspberry Pi Imager)
 4. if you used an up to date image (bookworm as of writing), run `sudo nmtui` and set a static IP, then reboot the pi `sudo reboot`
 
-### Adding your pi to the inventory and setting its variables
+### Adding your Raspberry Pi to the inventory and setting its variables
 [Snapcast](https://github.com/badaix/snapcast) uses a client/server model where all configured clients play in sync what is cast to the server.
 1. In the castpi2go directory, edit the inventory `nano inventory` and add the IP/hostname of your pi either under snapclients (installs only snapclient) or under snapservers (installs snapclient and snapserver).
 2. create a host variable file for your pi `cp host_vars/example.yml IP/hostname-of-your-pi.yml` and fill it out:
@@ -80,7 +80,7 @@ You can also use a different user ("ansible" if you lack creativity), I chose na
 3. Ensure that "private_key_file" in `nano ansible.cfg` points to your ansible SSH key and that the "remote_user" matches your chosen ansible user.
 4. Execute the bootstrap playbook `ansible-playbook bootstrap.yml -u user --key-file ~/.ssh/id_ed25519` (replace "user" with the user you set in Raspberry Pi Imager and "--key-file" with your normal SSH key).
 
-### Run the main playbook to fully set up your pi(s)
+### Run the main playbook to fully set up your Raspberry Pi(s)
 1. Edit the main playbook `nano castpi2go.yml`, find the "add ssh key for ansible user" task and fill out `key: ""` with your public ansible key `cat ~/.ssh/ansible.pub`. This is also performed in the bootstrap playbook and kept as a means to easily revoke or change the ssh key later on by adding "state: absent" for example. If you use a different ansible user, change "user: nandor" as well.
 2. In the castpi2go directory, execute the main playbook `ansible-playbook castpi2go.yml` This can also be used later on to update the pi(s), as it will update all apt packages as well as snapclient/snapserver which are not available on apt.
 
