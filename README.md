@@ -64,7 +64,7 @@ Since the playbook will configure the pis based on their IP/hostname, giving the
 ### Adding your pi to the inventory and setting its variables
 [Snapcast](https://github.com/badaix/snapcast) uses a client/server model where all configured clients play in sync what is cast to the server.
 1. In the castpi2go directory, edit the inventory `nano inventory` and add the IP/hostname of your pi either under snapclients (installs only snapclient) or under snapservers (installs snapclient and snapserver).
-2. create a host variable file for your pi `cp host_vars/default.yml IP/hostname-of-your-pi.yml` and fill it out:
+2. create a host variable file for your pi `cp host_vars/example.yml IP/hostname-of-your-pi.yml` and fill it out:
 3. "friendly_name" is what the pi will be called in the casting options
 4. "hifiberry_overlay" is specific to your DAC, see the [Hifiberry documentation](https://www.hifiberry.com/docs/software/configuring-linux-3-18-x/) to find the correct one.
 5. "snapcast_server_ip" this is the IP of the snapserver that the pi will play in sync with. When you cast to the snapserver, all snapclients will play the same in sync.
