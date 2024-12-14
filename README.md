@@ -1,11 +1,11 @@
 # castpi2go
 
-## Ansible playbook to deploy/manage raspberry pis + hifiberry DAC HATs with upmpdcli, mpd and snapcast as multi-room UPnP targets
+## Ansible playbook to deploy/manage Raspberry Pi(s) + hifiberry DAC HAT(s) with upmpdcli, mpd and snapcast as multi-room UPnP targets
 
 I wrote this because the number of pis in my family has reached a point where deploying them and keeping them up to date has become a chore.<br>
-The pis are mainly used as UPnP casting targets for Symfonium on android via wifi.<br>
-upmpdcli and mpd allow for bit perfect casting while snapcast allows for multi-room casting (letting multiple pis play the same music in sync).<br>
-This playbook can turn a pi (or many) with a fresh Raspberry Pi OS (Lite) install into a finished headless UPnP target within a couple of minutes with no user interaction.<br>
+The pis are mainly used as UPnP casting targets for [Symfonium](https://support.symfonium.app/) on android via wifi.<br>
+[upmpdcli](https://www.lesbonscomptes.com/upmpdcli/) and [mpd](https://github.com/MusicPlayerDaemon/MPD) allow for bit perfect casting while [snapcast](https://github.com/badaix/snapcast) allows for multi-room casting (letting multiple pis play the same music in sync).<br>
+This playbook can turn a pi (or many) with a fresh Raspberry Pi OS (Lite) install into a finished headless UPnP target within a couple of minutes with no user interaction (Pi 3B took 12 minutes).<br>
 I tested it on Raspberry Pi Zero 1W, Zero 2W, 2 and 3B. Tested DACs: Hifiberry Dac+ Pro and Dac+ Zero.
 
 **What can this playbook do?**
