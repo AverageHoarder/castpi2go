@@ -2,7 +2,7 @@
 
 ## Ansible playbook to deploy/manage raspberry pis + hifiberry DAC HATs with upmpdcli, mpd and snapcast as multi-room UPnP targets
 
-I wrote this because the number of pis in my family has reached a point point where deploying them and keeping them up to date has become a chore.<br>
+I wrote this because the number of pis in my family has reached a point where deploying them and keeping them up to date has become a chore.<br>
 The pis are used as UPnP casting targets for Symfonium on android.<br>
 upmpdcli and mpd allow for bit perfect casting while snapcast allows for multi-room casting (letting multiple pis play the same music in sync).<br>
 This playbook can turn a pi (or many) with a fresh raspbian install into a finished UPnP target within a couple of minutes with no user interaction.<br>
