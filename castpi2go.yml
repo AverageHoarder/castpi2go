@@ -140,6 +140,7 @@
     when:
       - target_arch is defined
       - hifiberry_overlay is defined
+
   - name: install snapcast client
     tags: snapclient,snapcast
     ansible.builtin.apt:
