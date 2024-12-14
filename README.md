@@ -134,4 +134,4 @@ If you have access to a 3D printer, there are also a couple of case designs on T
 
 ## What to cast from
 I recommend using [Symfonium](https://support.symfonium.app/) on android with [lms](https://github.com/epoupon/lms) as the provider.
-When the pi(s) are fully set up they should pop up as cast targets in Symfonium. If you want to listen on a specific pi, cast to that. If you want to use multi-room, cast to the snapserver Pi. You can group the snapclients and adjust their volume individually or in groups by opening Pi-snapcast-IP:1780 in any browser or by using dedicated apps like [Snapdroid](https://github.com/badaix/snapdroid).
+When the pi(s) are fully set up they should pop up as cast targets in Symfonium. If you want to listen on a specific pi, cast to that. If you want to use multi-room, cast to the snapserver pi. You can group the snapclients and adjust their volume individually or in groups by opening pi-snapcast-IP:1780 in any browser or by using dedicated apps like [Snapdroid](https://github.com/badaix/snapdroid).
