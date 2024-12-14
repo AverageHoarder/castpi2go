@@ -4,7 +4,7 @@
 
 I wrote this because the number of pis in my family has reached a point where deploying them and keeping them up to date has become a chore.<br>
 The pis are mainly used as UPnP casting targets for [Symfonium](https://support.symfonium.app/) on android via wifi.<br>
-[upmpdcli](https://www.lesbonscomptes.com/upmpdcli/) and [MPD](https://github.com/MusicPlayerDaemon/MPD) allow for bit perfect casting while [snapcast](https://github.com/badaix/snapcast) allows for multi-room casting (letting multiple pis play the same music in sync).<br>
+[upmpdcli](https://www.lesbonscomptes.com/upmpdcli/) and [MPD](https://github.com/MusicPlayerDaemon/MPD) allow for bit perfect casting while [Snapcast](https://github.com/badaix/snapcast) allows for multi-room casting (letting multiple pis play the same music in sync).<br>
 This playbook can turn a pi (or many) with a fresh Raspberry Pi OS (Lite) install into a finished headless UPnP target within a couple of minutes with no user interaction (Pi 3B took 12 minutes).<br>
 I tested it on Raspberry Pi Zero 1W, Zero 2W, 2 and 3B. Tested DACs: Hifiberry Dac+ Pro and Dac+ Zero.
 
@@ -17,10 +17,10 @@ I tested it on Raspberry Pi Zero 1W, Zero 2W, 2 and 3B. Tested DACs: Hifiberry D
   
 
 ## Installed Software
-Following the guides and documentation on these sites you can achieve the same as this playbook if you perform a bit over 20 steps.
-[MPD](https://github.com/MusicPlayerDaemon/MPD)
-[upmpdcli](https://www.lesbonscomptes.com/upmpdcli/)
-[snapcast](https://github.com/badaix/snapcast)
+Following the guides and documentation on these sites you can achieve the same as this playbook if you perform a bit over 20 steps (per pi).<br>
+[MPD - Music Player Daemon](https://github.com/MusicPlayerDaemon/MPD)<br>
+[upmpdcli - UPnP Audio Media Renderer based on MPD](https://www.lesbonscomptes.com/upmpdcli/)<br>
+[Snapcast - Synchronous multiroom audio player](https://github.com/badaix/snapcast)
 
 ## How to install castpi2go
 
