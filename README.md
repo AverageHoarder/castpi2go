@@ -27,8 +27,8 @@ Following the guides and documentation on these sites you can achieve the same a
 ### Prerequisites
 
 **Required:**
-1. [ansible](https://github.com/ansible/ansible) must be installed
-2. fresh install of Raspberry Pi OS Lite (it's what I've tested, it might work with other debian/ubuntu variants)
+1. [ansible](https://github.com/ansible/ansible) must be installed on your PC
+2. Raspberry Pi OS Lite should be freshly installed (it's what I've tested, it might work with other debian/ubuntu variants)
 
 ### Downloading the playbook
 Download the repository as .zip and unpack it where you want to run the playbook or clone the repository.
