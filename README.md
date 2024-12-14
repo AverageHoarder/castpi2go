@@ -3,7 +3,7 @@
 ## Ansible playbook to deploy/manage raspberry pis + hifiberry DAC HATs with upmpdcli, mpd and snapcast as multi-room UPnP targets
 
 I wrote this because the number of pis in my family has reached a point where deploying them and keeping them up to date has become a chore.<br>
-The pis are mainly used as UPnP casting targets for Symfonium on android.<br>
+The pis are mainly used as UPnP casting targets for Symfonium on android via wifi.<br>
 upmpdcli and mpd allow for bit perfect casting while snapcast allows for multi-room casting (letting multiple pis play the same music in sync).<br>
 This playbook can turn a pi (or many) with a fresh Raspberry Pi OS (Lite) install into a finished headless UPnP target within a couple of minutes with no user interaction.<br>
 I tested it on Raspberry Pi Zero 1W, Zero 2W, 2 and 3B. Tested DACs: Hifiberry Dac+ Pro and Dac+ Zero.
@@ -14,6 +14,13 @@ I tested it on Raspberry Pi Zero 1W, Zero 2W, 2 and 3B. Tested DACs: Hifiberry D
   * configure the audio settings to use the Hifiberry DAC (optional)
   * install mpd and upmpdcli and configure them
   * install and configure snapclient and/or snapserver (optional)
+  
+
+## Installed Software
+Following the guides and documentation on these sites you can achieve the same as this playbook if you perform a bit over 20 steps.
+[mpd](https://github.com/MusicPlayerDaemon/MPD)
+[upmpdcli](https://www.lesbonscomptes.com/upmpdcli/)
+[snapcast](https://github.com/badaix/snapcast)
 
 ## How to install castpi2go
 
@@ -43,8 +50,8 @@ You should then have two SSH key pairs (public/private) in `~/.ssh`.
 4. under "Choose Device" select the model of Pi you are using
 5. under "Choose OS" select the OS version you want (I usually choose Raspberry Pi OS Lite (64bit))
 6. under "Choose Storage" make sure you select the correct microSD card (everything on it will be deleted!)
-7. Edit Settings → General: add OS customisation settings, I recommend filling out everything (hostname, username, password, wlan config, locale settings)
-8. Services: Enable SSH, I recommend using public-key authentification only and pasting the contents of the public key of your normal user (`cat ~/.ssh/id_ed25519.pub`)
+7. Edit Settings → General: add OS customisation settings, I recommend filling out everything (hostname, username, password, wifi config, locale settings)
+8. Services: Enable SSH, I recommend using public-key authentification only and pasting the contents of the public key of your normal user `cat ~/.ssh/id_ed25519.pub`
 9. save changes, apply the OS settings and confirm flashing the microSD card
 
 ### Giving your pi a static IP (optional but recommended)
@@ -63,16 +70,16 @@ Since the playbook will configure the pis based on their IP/hostname, giving the
 5. "snapcast_server_ip" this is the IP of the snapserver that the pi will play in sync with. When you cast to the snapserver, all snapclients will play the same in sync.
 
 Note:
-You can delete the "hifiberry_overlay" line if you only want to install mpd, upmpdcli and snapserver on a pi without a Hifiberry DAC. This will skip the config steps that alter the audio settings of the pi.
+You can delete the "hifiberry_overlay" line if you only want to install mpd, upmpdcli and snapserver on a pi without a Hifiberry DAC. This will skip the config steps that alter the audio settings of the pi and also will not install snapclient.
 
-### Running the bootstrap playbook to set up the ansible user for the main playbook (optional)
+### Running the bootstrap playbook to set up the ansible user (optional)
 bootstrap.yml creates a new user "nandor" with passwordless sudo on the pi that will be used by the main playbook. The user will use the "ansible" key created earlier to authenticate.
 You can also use a different user ("ansible" if you lack creativity), I chose nandor because this playbook is relentless.
-1. In the castpi2go directory, edit the bootstrap playbook `nano bootstrap.yml`, then look for the `add ssh key` task and fill out `key: ""` with your public ansible key (`cat ~/.ssh/ansible.pub`).
+1. In the castpi2go directory, edit the bootstrap playbook `nano bootstrap.yml`, then look for the `add ssh key` task and fill out `key: ""` with your public ansible key `cat ~/.ssh/ansible.pub`.
 2. If you want to use a different user, search and replace all instances of "nandor" in bootstrap.yml with your chosen user name. You'll also have to edit `nano ansible.cfg` and replace nandor for the "remote_user" option.
 3. Ensure that "private_key_file" in `nano ansible.cfg` points to your ansible SSH key and that the "remote_user" matches your chosen ansible user.
-4. Execute the bootstrap playbook `ansible-playbook bootstrap.yml -u user --key-file ~/.ssh/id_ed25519` (replace "user" with the user you set in Raspberry Pi Imager and --key-file with your normal SSH key.
+4. Execute the bootstrap playbook `ansible-playbook bootstrap.yml -u user --key-file ~/.ssh/id_ed25519` (replace "user" with the user you set in Raspberry Pi Imager and "--key-file" with your normal SSH key.
 
 ### Run the main playbook to fully set up your pi(s)
-1. Edit the main playbook `nano castpi2go.yml` find the "add ssh key for ansible user" task and fill out `key: ""` with your public ansible key (`cat ~/.ssh/ansible.pub`). This is also performed in the bootstrap playbook and kept as a means to easily revoke or change the ssh key later on by adding "state: absent" for example. If you use a different ansible user, change "user: nandor" as well.
+1. Edit the main playbook `nano castpi2go.yml`, find the "add ssh key for ansible user" task and fill out `key: ""` with your public ansible key `cat ~/.ssh/ansible.pub`. This is also performed in the bootstrap playbook and kept as a means to easily revoke or change the ssh key later on by adding "state: absent" for example. If you use a different ansible user, change "user: nandor" as well.
 2. In the castpi2go directory, execute the main playbook `ansible-playbook castpi2go.yml` This can also be used later on to update the pi(s), as it will update all apt packages as well as snapclient/snapserver which are not available on apt.
