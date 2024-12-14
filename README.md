@@ -58,7 +58,7 @@ You should then have two SSH key pairs (public/private) in `~/.ssh`.
 Since the playbook will configure the pis based on their IP/hostname, giving them static IPs is recommended.
 1. install the microSD card in your pi, install the Hifiberry DAC HAT (optional) and connect the power supply
 2. once the pi has booted, find out its IP address in your router
-3. SSH into the pi via `ssh username@IP` (replace "username" with the user you set in Raspberry Pi Imager)
+3. SSH into the pi via `ssh username@IP/hostname` (replace "username" with the user you set in Raspberry Pi Imager)
 4. if you used an up to date image (bookworm as of writing), run `sudo nmtui` and set a static IP, then reboot the pi `sudo reboot`
 
 ### Adding your pi to the inventory and setting its variables
@@ -83,3 +83,16 @@ You can also use a different user ("ansible" if you lack creativity), I chose na
 ### Run the main playbook to fully set up your pi(s)
 1. Edit the main playbook `nano castpi2go.yml`, find the "add ssh key for ansible user" task and fill out `key: ""` with your public ansible key `cat ~/.ssh/ansible.pub`. This is also performed in the bootstrap playbook and kept as a means to easily revoke or change the ssh key later on by adding "state: absent" for example. If you use a different ansible user, change "user: nandor" as well.
 2. In the castpi2go directory, execute the main playbook `ansible-playbook castpi2go.yml` This can also be used later on to update the pi(s), as it will update all apt packages as well as snapclient/snapserver which are not available on apt.
+
+### Adding more Raspberry Pis
+If you want to add more pis, repeat the steps to flash the microSD card (Raspberry Pi Imager should remember your credentials and ssh key so you only have to change the host name).
+Then give the pi a static IP and add that to the inventory file. Create a matching host_vars file for it and set the variables, then run the bootstrap playbook and the main playbook.
+If you do not want to execute the playbooks on all hosts each time (does no harm but may slow down execution), limit them to a specific host like this: `ansible-playbook bootstrap.yml -u user --key-file ~/.ssh/id_ed25519 --limit pi-IP/hostname` and `ansible-playbook castpi2go.yml --limit pi-IP/hostname``
+
+## Recommended Hardware
+For an inexpensive but capable player I suggest using a [Raspberry Pi Zero 2W](https://www.raspberrypi.com/products/raspberry-pi-zero-2-w/), a [Hifiberry Dac+ Zero](https://www.hifiberry.com/shop/boards/hifiberry-dac-zero/) and a 32GB or 64GB microSD card of class A3 at least.
+If you have access to a 3D printer, there are also a couple of case designs on Thingiverse that should fit this combo: [Example 1](https://www.thingiverse.com/thing:3751356), [Example 2](https://www.thingiverse.com/thing:4527114)
+
+## What to cast from
+I recommend using [Symfonium](https://support.symfonium.app/) on android with [lms](https://github.com/epoupon/lms) as the provider.
+When the pi(s) are fully set up they should pop up as cast targets in Symfonium. If you want to listen on a specific pi, cast to that. If you want to use multi-room, cast to the snapserver Pi. You can group the snapclients and adjust their volume individually or in groups by opening Pi-snapcast-IP:1780 in any browser or by using dedicated apps like [Snapdroid](https://github.com/badaix/snapdroid).
