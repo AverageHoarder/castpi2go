@@ -1,0 +1,241 @@
+---
+
+- hosts: all
+  become: true
+
+  pre_tasks:
+  - name: install updates
+    tags: always
+    ansible.builtin.apt:
+      update_cache: yes
+      upgrade: dist 
+
+- hosts : all
+  become: true
+  tasks:
+
+  - name: add ssh key for ansible user
+    tags: always
+    ansible.builtin.authorized_key:
+      user: nandor
+      key: ""
+
+- hosts: all
+  become: true
+
+  vars:
+    arch_map:
+      armv6l: "armhf"
+      armv7l: "armhf"
+      aarch64: "arm64"
+    target_arch: "{{ arch_map[ansible_architecture] | default(ansible_architecture) }}"
+    snapclient_url: >
+      {{
+        (lookup('url', 'https://api.github.com/repos/badaix/snapcast/releases/latest', split_lines=false)
+        | from_json).assets
+        | selectattr('browser_download_url', 'search', 'snapclient.*' ~ target_arch ~ '.*' ~ ansible_distribution_release ~ '\.deb')
+        | map(attribute='browser_download_url')
+        | first
+      }}
+    snapclient_file: "/var/cache/apt/archives/{{ snapclient_url | regex_search('.*/(snapclient.*?\\.deb)', '\\1') | first }}"
+
+  tasks:
+  - name: disable dtparam
+    tags: hifiberry
+    ansible.builtin.replace:
+      path: /boot/firmware/config.txt
+      regexp: '^dtparam=audio=on$'
+      replace: '# dtparam=audio=on'
+    when: hifiberry_overlay is defined
+    notify: restart_pi
+
+  - name: disable vc4-kms-v3d
+    tags: hifiberry
+    ansible.builtin.lineinfile:
+      path: /boot/firmware/config.txt
+      regexp: '^dtoverlay=vc4-kms-v3d$'
+      line: dtoverlay=vc4-kms-v3d,noaudio
+    when: hifiberry_overlay is defined
+    notify: restart_pi
+
+  - name: add hifiberry device tree
+    tags: hifiberry
+    ansible.builtin.lineinfile:
+      path: /boot/firmware/config.txt
+      insertafter: '^#dtparam=audio=on$'
+      line: "{{ hifiberry_overlay }}"
+    when: hifiberry_overlay is defined
+    notify: restart_pi
+
+  - name: add alsa config for hifiberry
+    tags: hifiberry
+    ansible.builtin.copy:
+      dest: /etc/asound.conf
+      content: |
+        pcm.!default {
+          type hw card 0
+        }
+        ctl.!default {
+          type hw card 0
+        }
+    when: hifiberry_overlay is defined
+    notify: restart_pi
+
+  - name: download upmpdcli gpg key
+    tags: upmpdcli
+    ansible.builtin.get_url:
+      url: https://www.lesbonscomptes.com/pages/lesbonscomptes.gpg
+      dest: /usr/share/keyrings/lesbonscomptes.gpg
+
+  - name: download upmpdcli list file
+    tags: upmpdcli
+    ansible.builtin.get_url:
+      url: https://www.lesbonscomptes.com/upmpdcli/pages/upmpdcli-rbookworm.list
+      dest: /etc/apt/sources.list.d/upmpdcli-rbookworm.list
+
+  - name: install upmpdcli and mpd
+    tags: upmpdcli
+    ansible.builtin.apt:
+      name:
+        - upmpdcli
+        - mpd
+      state: latest
+      update_cache: yes
+
+  - name: start and enable mpd service
+    tags: upmpdcli
+    ansible.builtin.service:
+      name: mpd
+      state: started
+      enabled: yes
+
+  - name: set friendlyname for UPnP
+    tags: upmpdcli
+    ansible.builtin.replace:
+      path: /etc/upmpdcli.conf
+      regexp: '^#?friendlyname = .*$'
+      replace: friendlyname = {{ friendly_name }}
+    notify: restart_upmpdcli
+
+  - name: configure audio device for mpd to use
+    tags: upmpdcli
+    ansible.builtin.blockinfile:
+      path: /etc/mpd.conf
+      insertafter: '^# An example of an ALSA output:$'
+      block: |
+        audio_output {
+                type            "alsa"
+                name            "Hifiberry DAC"
+                device          "hw:CARD=sndrpihifiberry,DEV=0" # optional
+                mixer_type      "software"      # optional
+        }
+    when: hifiberry_overlay is defined
+    notify: restart_mpd
+
+  - name: download snapcast client binary
+    tags: snapclient,snapcast
+    ansible.builtin.get_url:
+      url: "{{ snapclient_url }}"
+      dest: "{{ snapclient_file }}"
+    when:
+      - target_arch is defined
+      - hifiberry_overlay is defined
+  - name: install snapcast client
+    tags: snapclient,snapcast
+    ansible.builtin.apt:
+      deb: "{{ snapclient_file }}"
+    when:
+      - target_arch is defined
+      - hifiberry_overlay is defined
+
+  - name: set snapcast server IP in client config
+    tags: snapclient,snapcast
+    ansible.builtin.replace:
+      path: /etc/default/snapclient
+      regexp: '^SNAPCLIENT_OPTS="(?:-h \d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})?'
+      replace: SNAPCLIENT_OPTS="-h {{ snapcast_server_ip }}
+    when: hifiberry_overlay is defined
+    notify: restart_snapclient
+
+
+  handlers:
+  - name: restart_pi
+    ansible.builtin.reboot:
+
+  - name: restart_upmpdcli
+    ansible.builtin.service:
+      name: upmpdcli
+      state: restarted
+
+  - name: restart_mpd
+    ansible.builtin.service:
+      name: mpd
+      state: restarted
+
+  - name: restart_snapclient
+    ansible.builtin.service:
+      name: snapclient
+      state: restarted
+
+- hosts: snapservers
+  become: true
+
+  vars:
+    arch_map:
+      armv6l: "armhf"
+      armv7l: "armhf"
+      aarch64: "arm64"
+    target_arch: "{{ arch_map[ansible_architecture] | default(ansible_architecture) }}"
+    snapserver_url: >
+      {{
+        (lookup('url', 'https://api.github.com/repos/badaix/snapcast/releases/latest', split_lines=false)
+        | from_json).assets
+        | selectattr('browser_download_url', 'search', 'snapserver.*' ~ target_arch ~ '.*' ~ ansible_distribution_release ~ '\.deb')
+        | map(attribute='browser_download_url')
+        | first
+      }}
+    snapserver_file: "/var/cache/apt/archives/{{ snapserver_url | regex_search('.*/(snapserver.*?\\.deb)', '\\1') | first }}"
+
+  tasks:
+  - name: download snapcast server binary
+    tags: snapserver,snapcast
+    ansible.builtin.get_url:
+      url: "{{ snapserver_url }}"
+      dest: "{{ snapserver_file }}"
+    when: target_arch is defined
+
+  - name: install snapcast server
+    tags: snapserver,snapcast
+    ansible.builtin.apt:
+      deb: "{{ snapserver_file }}"
+    when: target_arch is defined
+
+  - name: add pipe to mpd.conf
+    tags: snapserver,snapcast
+    ansible.builtin.blockinfile:
+      path: /etc/mpd.conf
+      insertafter: '^# An example of an ALSA output:$'
+      block: |
+        audio_output {
+            type            "fifo"
+            name            "snapserver pipe"
+            path            "/tmp/snapfifo"
+            format          "48000:16:2"
+            mixer_type      "software"
+        }
+    notify: restart_snapserver
+
+  - name: set friendlyname for snapserver source
+    tags: snapserver,snapcast
+    ansible.builtin.replace:
+      path: /etc/snapserver.conf
+      regexp: 'tmp\/snapfifo\?name=.*$'
+      replace: tmp/snapfifo?name={{ friendly_name }}
+    notify: restart_snapserver
+
+
+  handlers:
+  - name: restart_snapserver
+    ansible.builtin.service:
+      name: snapserver
+      state: restarted

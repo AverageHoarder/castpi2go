@@ -1,0 +1,43 @@
+---
+
+- hosts: all
+  become: true
+
+  pre_tasks:
+  - name: install updates
+    tags: always
+    ansible.builtin.apt:
+      update_cache: yes
+      upgrade: dist 
+
+- hosts : all
+  become: true
+  tasks:
+
+  - name: create nandor user
+    tags: always
+    ansible.builtin.user:
+      name: nandor
+      shell: /bin/bash
+      state: present
+
+  - name: add ssh key
+    tags: always
+    ansible.builtin.authorized_key:
+      user: nandor
+      key: ""
+
+  - name: add user to sudo group
+    tags: always
+    user:
+      name: nandor
+      groups: sudo
+      append: yes
+
+  - name: allow passwordless sudo for the user
+    lineinfile:
+      path: /etc/sudoers
+      state: present
+      regexp: '^nandor'
+      line: 'nandor ALL=(ALL) NOPASSWD:ALL'
+      validate: '/usr/sbin/visudo -cf %s'
