@@ -90,8 +90,8 @@
   - name: download upmpdcli list file
     tags: upmpdcli
     ansible.builtin.get_url:
-      url: https://www.lesbonscomptes.com/upmpdcli/pages/upmpdcli-rbookworm.list
-      dest: /etc/apt/sources.list.d/upmpdcli-rbookworm.list
+      url: https://www.lesbonscomptes.com/upmpdcli/pages/upmpdcli-r{{ ansible_distribution_release }}.list
+      dest: /etc/apt/sources.list.d/upmpdcli-r{{ ansible_distribution_release }}.list
 
   - name: install upmpdcli and mpd
     tags: upmpdcli
