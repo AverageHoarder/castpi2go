@@ -18,6 +18,7 @@ I tested it on Raspberry Pi Zero 1W, Zero 2W, 2 and 3B. Tested DACs: Hifiberry D
 
 ## Installed Software
 Following the guides and documentation on these sites you can achieve the same as this playbook if you perform a bit over 20 steps (per pi).<br>
+[Hifiberry](https://www.hifiberry.com/docs/software/configuring-linux-3-18-x/)<br>
 [MPD - Music Player Daemon](https://github.com/MusicPlayerDaemon/MPD)<br>
 [upmpdcli - UPnP Audio Media Renderer based on MPD](https://www.lesbonscomptes.com/upmpdcli/)<br>
 [Snapcast - Synchronous multiroom audio player](https://github.com/badaix/snapcast)
