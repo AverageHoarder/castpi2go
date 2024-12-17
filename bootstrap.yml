@@ -8,29 +8,32 @@
     tags: always
     ansible.builtin.apt:
       update_cache: yes
-      upgrade: dist 
+      upgrade: dist
 
 - hosts : all
   become: true
-  tasks:
 
-  - name: create nandor user
+  vars:
+    ansible_user: nandor
+
+  tasks:
+  - name: create ansible user
     tags: always
     ansible.builtin.user:
-      name: nandor
+      name: "{{ ansible_user }}"
       shell: /bin/bash
       state: present
 
   - name: add ssh key
     tags: always
     ansible.builtin.authorized_key:
-      user: nandor
+      user: "{{ ansible_user }}"
       key: ""
 
   - name: add user to sudo group
     tags: always
     user:
-      name: nandor
+      name: "{{ ansible_user }}"
       groups: sudo
       append: yes
 
@@ -38,6 +41,6 @@
     lineinfile:
       path: /etc/sudoers
       state: present
-      regexp: '^nandor'
-      line: 'nandor ALL=(ALL) NOPASSWD:ALL'
+      regexp: '^{{ ansible_user }}'
+      line: '{{ ansible_user }} ALL=(ALL) NOPASSWD:ALL'
       validate: '/usr/sbin/visudo -cf %s'

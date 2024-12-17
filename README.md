@@ -77,7 +77,7 @@ You can delete the "hifiberry_overlay" line if you only want to install mpd, upm
 bootstrap.yml creates a new user "nandor" with passwordless sudo on the pi that will be used by the main playbook. The user will use the "ansible" key created earlier to authenticate.
 You can also use a different user ("ansible" if you lack creativity), I chose nandor because this playbook is relentless.
 1. In the castpi2go directory, edit the bootstrap playbook `nano bootstrap.yml`, then look for the `add ssh key` task and fill out `key: ""` with your public ansible key `cat ~/.ssh/ansible.pub`.
-2. If you want to use a different user, search and replace all instances of "nandor" in bootstrap.yml with your chosen user name. You'll also have to edit `nano ansible.cfg` and replace nandor for the "remote_user" option.
+2. If you want to use a different user, search and replace "nandor" in bootstrap.yml, ansible.cfg and castpi2go.yml with your chosen user name. A quick way to achieve this is by using `sed -i 's/nandor/ansible/g' *` in the castpi2go directory if you'd prefer to call the user "ansible" for example.
 3. Ensure that "private_key_file" in `nano ansible.cfg` points to your ansible SSH key and that the "remote_user" matches your chosen ansible user.
 4. Execute the bootstrap playbook `ansible-playbook bootstrap.yml -u user --key-file ~/.ssh/id_ed25519` (replace "user" with the user you set in Raspberry Pi Imager and "--key-file" with your normal SSH key).
 
