@@ -13,10 +13,11 @@
 - hosts : all
   become: true
 
-  vars:
-    ansible_user: nandor
-
   tasks:
+  - name: Include ansible user and ssh key from ssh_config.yaml
+    ansible.builtin.include_vars:
+      file: ssh_config.yaml
+
   - name: create ansible user
     tags: always
     ansible.builtin.user:
@@ -28,7 +29,7 @@
     tags: always
     ansible.builtin.authorized_key:
       user: "{{ ansible_user }}"
-      key: ""
+      key: "{{ ansible_user_ssh_key }}"
 
   - name: add user to sudo group
     tags: always

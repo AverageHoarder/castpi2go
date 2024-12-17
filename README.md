@@ -73,17 +73,20 @@ Since the playbook will configure the pis based on their IP/hostname, giving the
 Note:
 You can delete the "hifiberry_overlay" line if you only want to install mpd, upmpdcli and snapserver on a pi without a Hifiberry DAC. This will skip the config steps that alter the audio settings of the pi and also will not install snapclient.
 
+### Setting the ansible user and its SSH key
+bootstrap.yml creates a new user "nandor" with passwordless sudo on the pi that is then used by the castpi2go.yml playbook. This new user uses the "ansible" key created earlier to authenticate.
+You can use a different user ("ansible" if you lack creativity), I chose nandor because this playbook is relentless.
+1. In the castpi2go/vars subdirectory, edit the SSH config file `nano ssh_config.yaml` and fill out `ansible_user_ssh_key: ""` with your public ansible key `cat ~/.ssh/ansible.pub`.
+2. If you want to use a different user, replace "nandor" in the first line (`ansible_user: nandor`).
+3. When using a different user, in the castpi2go directory you have to replace "nandor" in the `remote_user = nandor` line in the ansible config `nano ansible.cfg` with your chosen ansible user.
+
 ### Running the bootstrap playbook to set up the ansible user (optional)
-bootstrap.yml creates a new user "nandor" with passwordless sudo on the pi that will be used by the main playbook. The user will use the "ansible" key created earlier to authenticate.
-You can also use a different user ("ansible" if you lack creativity), I chose nandor because this playbook is relentless.
-1. In the castpi2go directory, edit the bootstrap playbook `nano bootstrap.yml`, then look for the `add ssh key` task and fill out `key: ""` with your public ansible key `cat ~/.ssh/ansible.pub`.
-2. If you want to use a different user, search and replace "nandor" in bootstrap.yml, ansible.cfg and castpi2go.yml with your chosen user name. A quick way to achieve this is by using `sed -i 's/nandor/ansible/g' *` in the castpi2go directory if you'd prefer to call the user "ansible" for example.
-3. Ensure that "private_key_file" in `nano ansible.cfg` points to your ansible SSH key and that the "remote_user" matches your chosen ansible user.
-4. Execute the bootstrap playbook `ansible-playbook bootstrap.yml -u user --key-file ~/.ssh/id_ed25519` (replace "user" with the user you set in Raspberry Pi Imager and "--key-file" with your normal SSH key).
+1. Ensure that "private_key_file" in `nano ansible.cfg` points to your ansible SSH key and that the "remote_user" matches your chosen ansible user.
+2. Execute the bootstrap playbook `ansible-playbook bootstrap.yml -u user --key-file ~/.ssh/id_ed25519` (replace "user" with the user you set in Raspberry Pi Imager and "--key-file" with your normal SSH key).
 
 ### Running the main playbook to fully set up your Raspberry Pi(s)
-1. Edit the main playbook `nano castpi2go.yml`, find the "add ssh key for ansible user" task and fill out `key: ""` with your public ansible key `cat ~/.ssh/ansible.pub`. This is also performed in the bootstrap playbook and kept as a means to easily revoke or change the ssh key later on by adding "state: absent" for example. If you use a different ansible user, change "user: nandor" as well.
-2. In the castpi2go directory, execute the main playbook `ansible-playbook castpi2go.yml` This can also be used later on to update the pi(s), as it will update all apt packages as well as snapclient/snapserver which are not available on apt.
+1. Ensure that "private_key_file" in `nano ansible.cfg` points to your ansible SSH key and that the "remote_user" matches your chosen ansible user.
+2. In the castpi2go directory, execute the main playbook `ansible-playbook castpi2go.yml` This can also be used later on to update the pi(s), as it will update all apt packages as well as snapclient/snapserver and upmpdcli which are not available on apt.
 
 ### Adding more Raspberry Pis
 If you want to add more pis, repeat the steps to flash the microSD card (Raspberry Pi Imager should remember your credentials and ssh key so you only have to change the host name).

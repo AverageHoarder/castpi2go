@@ -13,12 +13,15 @@
 - hosts : all
   become: true
   tasks:
+  - name: Include ansible user and ssh key from ssh_config.yaml
+    ansible.builtin.include_vars:
+      file: ssh_config.yaml
 
   - name: add ssh key for ansible user
     tags: always
     ansible.builtin.authorized_key:
-      user: nandor
-      key: ""
+      user: "{{ ansible_user }}"
+      key: "{{ ansible_user_ssh_key }}"
 
 - hosts: all
   become: true
