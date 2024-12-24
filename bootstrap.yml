@@ -21,20 +21,20 @@
   - name: create ansible user
     tags: always
     ansible.builtin.user:
-      name: "{{ ansible_user }}"
+      name: "{{ user_for_ansible }}"
       shell: /bin/bash
       state: present
 
   - name: add ssh key
     tags: always
     ansible.builtin.authorized_key:
-      user: "{{ ansible_user }}"
-      key: "{{ ansible_user_ssh_key }}"
+      user: "{{ user_for_ansible }}"
+      key: "{{ user_for_ansible_ssh_key }}"
 
   - name: add user to sudo group
     tags: always
     user:
-      name: "{{ ansible_user }}"
+      name: "{{ user_for_ansible }}"
       groups: sudo
       append: yes
 
@@ -42,6 +42,6 @@
     lineinfile:
       path: /etc/sudoers
       state: present
-      regexp: '^{{ ansible_user }}'
-      line: '{{ ansible_user }} ALL=(ALL) NOPASSWD:ALL'
+      regexp: '^{{ user_for_ansible }}'
+      line: '{{ user_for_ansible }} ALL=(ALL) NOPASSWD:ALL'
       validate: '/usr/sbin/visudo -cf %s'

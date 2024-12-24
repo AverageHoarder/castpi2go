@@ -76,8 +76,8 @@ You can delete the "hifiberry_overlay" line if you only want to install mpd, upm
 ### Setting the ansible user and its SSH key
 bootstrap.yml creates a new user "nandor" with passwordless sudo on the pi that is then used by the castpi2go.yml playbook. This new user uses the "ansible" key created earlier to authenticate.
 You can use a different user ("ansible" if you lack creativity), I chose nandor because this playbook is relentless.
-1. In the castpi2go/vars subdirectory, edit the SSH config file `nano ssh_config.yaml` and fill out `ansible_user_ssh_key: ""` with your public ansible key `cat ~/.ssh/ansible.pub`.
-2. If you want to use a different user, replace "nandor" in the first line (`ansible_user: nandor`).
+1. In the castpi2go/vars subdirectory, edit the SSH config file `nano ssh_config.yaml` and fill out `user_for_ansible_ssh_key: ""` with your public ansible key `cat ~/.ssh/ansible.pub`.
+2. If you want to use a different user, replace "nandor" in the first line (`user_for_ansible: nandor`).
 3. When using a different user, in the castpi2go directory you have to replace "nandor" in the `remote_user = nandor` line in the ansible config `nano ansible.cfg` with your chosen ansible user.
 
 ### Running the bootstrap playbook to set up the ansible user (optional)

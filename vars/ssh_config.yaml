@@ -1,2 +1,2 @@
-ansible_user: nandor
-ansible_user_ssh_key: ""
+user_for_ansible: nandor
+user_for_ansible_ssh_key: ""

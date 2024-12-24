@@ -20,8 +20,8 @@
   - name: add ssh key for ansible user
     tags: always
     ansible.builtin.authorized_key:
-      user: "{{ ansible_user }}"
-      key: "{{ ansible_user_ssh_key }}"
+      user: "{{ user_for_ansible }}"
+      key: "{{ user_for_ansible_ssh_key }}"
 
 - hosts: all
   become: true
