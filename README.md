@@ -47,8 +47,8 @@ Then execute it: <br>
 
 ### First run
 On the first run, use `1 - Configure SSH keys and users` to create/configure the required ssh keys and users. <br>
-When prompted, copy the content of the public SSH key and follow the instructions to [flash the microSD card](https://github.com/AverageHoarder/castpi2go#preparingflashing-the-microsd-card).<br>
-Then [give your pi a static IP](https://github.com/AverageHoarder/castpi2go#giving-your-raspberry-pi-a-static-ip-optional-but-recommended).
+When prompted, copy the content of the public SSH key and follow the instructions to [flash the microSD card](https://github.com/AverageHoarder/castpi2go?tab=readme-ov-file#preparingflashing-the-microsd-card).<br>
+Then [give your pi a static IP](https://github.com/AverageHoarder/castpi2go?tab=readme-ov-file#giving-your-raspberry-pi-a-static-ip-optional-but-recommended).
 
 ### Adding a pi
 Use options, 2, 3 and 4 in order and follow the instructions.
@@ -85,7 +85,7 @@ Since the playbook will configure the pis based on their IP/hostname, giving the
 2. once the pi has booted, find out its IP address in your router
 3. SSH into the pi via `ssh username@IP/hostname` (replace "username" with the user you set in Raspberry Pi Imager)
 4. if you used an up to date image (bookworm as of writing), run `sudo nmtui` and set a static IP, then reboot the pi `sudo reboot`
-Note: If you are using the convenience script, carry on [here](https://github.com/AverageHoarder/castpi2go#adding-a-pi).
+Note: If you are using the convenience script, carry on [here](https://github.com/AverageHoarder/castpi2go?tab=readme-ov-file#adding-a-pi).
 
 ### Adding your Raspberry Pi to the inventory and setting its variables
 [Snapcast](https://github.com/badaix/snapcast) uses a client/server model where all configured clients play in sync what is cast to the server.
