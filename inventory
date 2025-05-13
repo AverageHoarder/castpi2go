@@ -1,5 +1,4 @@
 [snapclients]
-# 192.168.1.41 EXAMPLE
-
+# 192.168.1.41
 [snapservers]
-# 192.168.1.42 EXAMPLE
+# 192.168.1.42

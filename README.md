@@ -31,11 +31,35 @@ Following the guides and documentation on these sites you can achieve the same a
 1. [ansible](https://github.com/ansible/ansible) must be installed on your PC
 2. Raspberry Pi OS Lite should be freshly installed (it's what I've tested, it might work with other debian/ubuntu variants)
 
-### Downloading the playbook
+### Downloading the playbooks
 Download the repository as .zip and unpack it where you want to run the playbook or clone the repository.
 
-## Step by step guide
+### Required hardware
 This guide assumes that you have a Raspberry Pi, a power supply, a Hifiberry DAC HAT (optional) and a microSD card. Linux commands are used, but they work in [WSL on Windows](https://learn.microsoft.com/en-us/windows/wsl/install) as well.
+
+## Guide for using the convenience bash script (new)
+
+### Preparing and executing the script
+In the repository directory, run: <br>
+`chmod +x castpi2go.sh` to make the convenience script executable. <br>
+Then execute it: <br>
+`bash castpi2go.sh`
+
+### First run
+On the first run, use `1 - Configure SSH keys and users` to create/configure the required ssh keys and users. <br>
+When prompted, copy the content of the public SSH key and follow the instructions to [flash the microSD card](https://github.com/AverageHoarder/castpi2go#preparingflashing-the-microsd-card).<br>
+Then [give your pi a static IP](https://github.com/AverageHoarder/castpi2go#giving-your-raspberry-pi-a-static-ip-optional-but-recommended).
+
+### Adding a pi
+Use options, 2, 3 and 4 in order and follow the instructions.
+
+### Updating the pi(s)
+To update the software on a pi or all pis, use `4 - Run ansible main playbook`.
+
+### List configured pis
+Use `5 - List all configured hosts` to list the configs of all pis (ip, friendly name etc.). This can be useful if you have forgotten which IP belongs to which pi.
+
+## Manual step by step guide
 
 ### Preparing SSH keys
 If you already have a SSH key for your user as well as an ansible specific SSH key, you can skip these steps.
@@ -61,6 +85,7 @@ Since the playbook will configure the pis based on their IP/hostname, giving the
 2. once the pi has booted, find out its IP address in your router
 3. SSH into the pi via `ssh username@IP/hostname` (replace "username" with the user you set in Raspberry Pi Imager)
 4. if you used an up to date image (bookworm as of writing), run `sudo nmtui` and set a static IP, then reboot the pi `sudo reboot`
+Note: If you are using the convenience script, carry on [here](https://github.com/AverageHoarder/castpi2go#adding-a-pi).
 
 ### Adding your Raspberry Pi to the inventory and setting its variables
 [Snapcast](https://github.com/badaix/snapcast) uses a client/server model where all configured clients play in sync what is cast to the server.
@@ -133,7 +158,7 @@ snapcast_server_ip: 192.168.1.42
 This would yield 3 new UPnP casting targets in Symfonium: Pi3B, PiZero2W and Pi3B_snapserver. Casting to Pi3B_snapserver would lead to the other two pis playing in sync. In this case you could control the volume of these 2 pis by opening `http://192.168.1.42:1780/` in a browser. Alternatively you could cast to each of the 2 pis individually, in which case Symfonium controls the volume.
 
 ## Recommended Hardware
-For an inexpensive but capable player I suggest using a [Raspberry Pi Zero 2W](https://www.raspberrypi.com/products/raspberry-pi-zero-2-w/), a [Hifiberry Dac+ Zero](https://www.hifiberry.com/shop/boards/hifiberry-dac-zero/) and a 32GB or 64GB microSD card of class A3 at least.
+For an inexpensive but capable player I suggest using a [Raspberry Pi Zero 2W](https://www.raspberrypi.com/products/raspberry-pi-zero-2-w/), a [Hifiberry Dac+ Zero](https://www.hifiberry.com/shop/boards/hifiberry-dac-zero/) and a 32GB or 64GB microSD card of class A2 at least.
 If you have access to a 3D printer, there are also a couple of case designs on Thingiverse that should fit this combo: [Example 1](https://www.thingiverse.com/thing:3751356), [Example 2](https://www.thingiverse.com/thing:4527114)
 
 ## What to cast from
