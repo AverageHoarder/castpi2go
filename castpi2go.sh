@@ -26,7 +26,7 @@ update_ssh_config() {
         default_user=$(grep '^user_for_ansible:' "$VARS_FILE" | awk '{print $2}')
 
         echo "Available public SSH keys in $SSH_DIR:"
-        mapfile -t keys < <(find "$SSH_DIR" -type f -name "*.pub")
+        mapfile -t keys < <(find "$SSH_DIR" -type f -name "*.pub" ! -name "known_hosts*" ! -name "config")
 
         if [[ ${#keys[@]} -eq 0 ]]; then
             echo "No public SSH keys found in $SSH_DIR."
@@ -178,7 +178,7 @@ run_bootstrap() {
 
     # List private keys (exclude .pub files)
     echo "Available private SSH keys in $SSH_DIR:"
-    mapfile -t private_keys < <(find "$SSH_DIR" -type f ! -name "*.pub")
+    mapfile -t private_keys < <(find "$SSH_DIR" -type f ! -name "*.pub" ! -name "known_hosts*" ! -name "config")
 
     if [[ ${#private_keys[@]} -eq 0 ]]; then
         echo "No private SSH keys found in $SSH_DIR."
@@ -193,6 +193,17 @@ run_bootstrap() {
             echo "Invalid selection. Try again."
         fi
     done
+
+    echo "Ensuring the selected SSH key is available..."
+    if [ -z "$SSH_AUTH_SOCK" ] || ! ssh-add -l >/dev/null 2>&1; then
+        eval "$(ssh-agent -s)" >/dev/null
+    fi
+    if ! ssh-add "$key"; then
+        echo
+        echo "Failed to add the SSH key."
+        echo "Make sure an SSH agent is running."
+        return 1
+    fi
 
     # Parse inventory to find non-commented host/group names
     echo "Scanning inventory for available hosts or groups..."
@@ -218,7 +229,11 @@ run_bootstrap() {
 
     # Run ansible-playbook
     echo "Running Ansible bootstrap playbook..."
-    ansible-playbook bootstrap.yml -u "$ansible_user" --key-file "$key" $limit_option
+    ansible-playbook \
+        bootstrap.yml \
+        -u "$ansible_user" \
+        --private-key "$key" \
+        $limit_option
 }
 
 run_main() {
