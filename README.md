@@ -84,7 +84,7 @@ Since the playbook will configure the pis based on their IP/hostname, giving the
 1. install the microSD card in your pi, install the Hifiberry DAC HAT (optional) and connect the power supply
 2. once the pi has booted, find out its IP address in your router
 3. SSH into the pi via `ssh username@IP/hostname` (replace "username" with the user you set in Raspberry Pi Imager)
-4. if you used an up to date image (bookworm as of writing), run `sudo nmtui` and set a static IP, then reboot the pi `sudo reboot`
+4. if you used an up to date image (trixie as of writing), run `sudo nmtui` and set a static IP, then reboot the pi `sudo reboot`
 Note: If you are using the convenience script, carry on [here](https://github.com/AverageHoarder/castpi2go?tab=readme-ov-file#adding-a-pi).
 
 ### Adding your Raspberry Pi to the inventory and setting its variables
