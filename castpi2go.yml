@@ -31,12 +31,12 @@
       armv6l: "armhf"
       armv7l: "armhf"
       aarch64: "arm64"
-    target_arch: "{{ arch_map[ansible_architecture] | default(ansible_architecture) }}"
+    target_arch: "{{ arch_map[ansible_facts['architecture']] | default(ansible_facts['architecture']) }}"
     snapclient_url: >
       {{
         (lookup('url', 'https://api.github.com/repos/badaix/snapcast/releases/latest', split_lines=false)
         | from_json).assets
-        | selectattr('browser_download_url', 'search', 'snapclient.*' ~ target_arch ~ '.*' ~ ansible_distribution_release ~ '\.deb')
+        | selectattr('browser_download_url', 'search', 'snapclient.*' ~ target_arch ~ '.*' ~ ansible_facts['distribution_release'] ~ '\.deb')
         | map(attribute='browser_download_url')
         | first
       }}
@@ -93,8 +93,8 @@
   - name: download upmpdcli list file
     tags: upmpdcli
     ansible.builtin.get_url:
-      url: https://www.lesbonscomptes.com/upmpdcli/pages/upmpdcli-r{{ ansible_distribution_release }}.list
-      dest: /etc/apt/sources.list.d/upmpdcli-r{{ ansible_distribution_release }}.list
+      url: https://www.lesbonscomptes.com/upmpdcli/pages/upmpdcli-r{{ ansible_facts['distribution_release'] }}.list
+      dest: /etc/apt/sources.list.d/upmpdcli-r{{ ansible_facts['distribution_release'] }}.list
 
   - name: install upmpdcli and mpd
     tags: upmpdcli
