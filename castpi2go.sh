@@ -233,6 +233,7 @@ run_bootstrap() {
         bootstrap.yml \
         -u "$ansible_user" \
         --private-key "$key" \
+        --ask-become-pass \
         $limit_option
 }
 
