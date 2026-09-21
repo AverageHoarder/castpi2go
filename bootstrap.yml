@@ -8,7 +8,7 @@
     tags: always
     ansible.builtin.apt:
       update_cache: yes
-      upgrade: dist 
+      upgrade: dist
 
 - hosts : all
   become: true
