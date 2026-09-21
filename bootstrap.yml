@@ -8,7 +8,7 @@
     tags: always
     ansible.builtin.apt:
       update_cache: yes
-      upgrade: dist
+      upgrade: dist 
 
 - hosts : all
   become: true
@@ -37,11 +37,12 @@
       name: "{{ user_for_ansible }}"
       groups: sudo
       append: yes
-
   - name: allow passwordless sudo for the user
-    lineinfile:
-      path: /etc/sudoers
-      state: present
-      regexp: '^{{ user_for_ansible }}'
-      line: '{{ user_for_ansible }} ALL=(ALL) NOPASSWD:ALL'
+    ansible.builtin.copy:
+      dest: "/etc/sudoers.d/{{ user_for_ansible }}"
+      content: "{{ user_for_ansible }} ALL=(ALL) NOPASSWD:ALL\n"
+      owner: root
+      group: root
+      mode: '0440'
       validate: '/usr/sbin/visudo -cf %s'
+
